@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Engine.Command;
+using Engine.Models;
+
+namespace Engine.ViewModels
+{
+    public class GameSession
+    {
+        #region "public propertys"
+        public Player CurrentPlayer { get; set; }
+
+        public ICommand CommandAddExp { get; private set; }
+        public ICommand CommandAddGold { get; private set; }
+        #endregion
+
+
+        public GameSession()
+        {
+            // initialise new Player
+            CurrentPlayer = new Player();
+            CurrentPlayer.Name = "Naoh";
+            CurrentPlayer.CharacterClass = "Mage";
+            CurrentPlayer.HitPoints = 10;
+            CurrentPlayer.Gold = 1000000;
+            CurrentPlayer.ExperiencePoints = 0;
+            CurrentPlayer.Level = 1;
+
+            // initialise Commands                                           
+            CommandAddExp = new RelayCommand(AddExpExecute, AddExpCanExecute);
+            CommandAddGold = new RelayCommand(AddGoldExecute, null);
+        }
+
+        #region "Methods for Commands"
+        private bool AddExpCanExecute(object obj)
+        {
+            return CurrentPlayer.ExperiencePoints + 10 <= 100;
+        }
+
+        private void AddExpExecute(object obj)
+        {
+            CurrentPlayer.ExperiencePoints += 10;
+        }
+
+        private void AddGoldExecute(object obj)
+        {
+            CurrentPlayer.Gold += 25;
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,99 @@
+﻿<Window x:Class="WPFUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Engine.ViewModels;assembly=Engine"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="750" Width="1250">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="Resources\NavigationButtons.xaml" />-->
+                <!--<ResourceDictionary Source="Resources\AnzeigeTextboxen.xaml" />-->
+            </ResourceDictionary.MergedDictionaries>
+            <!--<local:GameSessionViewModel x:Key="vm" />-->
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!--<Grid DataContext="{StaticResource vm}">-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Menu" Background="AliceBlue" />
+
+        <Grid Grid.Row="1" Grid.Column="0" Background="Chocolate">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Content="Player Info" Name="ShowPI" Width="75" Height="25" Margin="0 25 0 0" Command="{Binding CommandShowInfo}" />
+            <Button Grid.Row="1" Content="Inventar" Width="75" Height="25" Margin="0 25 0 0" />
+            <Button Grid.Row="2" Content="Map"  Width="75" Height="25" Margin="0 25 0 0" Command="{Binding CommandShowWorldMap}"  />
+            <Button Grid.Row="3" Content="Quests"  Width="75" Height="25" Margin="0 25 0 0" />
+            <Button Grid.Row="4" Content="TestAddExp"  Width="75" Height="25" Margin=" 0 50 0 0" Command="{Binding CommandAddExp}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1" Background="Beige">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="1.5*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="1" BorderBrush="Gainsboro" BorderThickness="1">
+                <Grid Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="{Binding CurrentPlayer.CurrentLocation.Name}" />
+                    <Image Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="250" Width="250" Source="{Binding CurrentPlayer.CurrentLocation.ImageName}" />
+                    <TextBlock Grid.Row="2" HorizontalAlignment="Center" Text="{Binding CurrentPlayer.CurrentLocation.Description}" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="AntiqueWhite" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" Content="Combat" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button Content="N" Grid.Row="0" Height="50" Width="50" Margin="0 0 0 10" Command="{Binding CommandMoveNorth}" />
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="W" Height="50" Width="50" Margin="0 0 10 0" Command="{Binding CommandMoveWest}" />
+                    <Button Content="S" Height="50" Width="50" Margin="10 0 10 0" Command="{Binding CommandMoveSouth}" />
+                    <Button Content="E" Height="50" Width="50" Margin="10 0 0 0" Command="{Binding CommandMoveEast}" />
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

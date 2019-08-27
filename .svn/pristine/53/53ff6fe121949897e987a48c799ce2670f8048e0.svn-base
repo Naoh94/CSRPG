@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Engine.Command;
+using Engine.Models;
+
+namespace Engine.ViewModels
+{
+    public class GameSessionViewModel
+    {
+        #region "public propertys"
+        public Player CurrentPlayer { get; set; }
+        public Location CurrentPlayerLocation { get; set; }
+
+        public ICommand CommandAddExp { get; private set; }
+        public ICommand CommandAddGold { get; private set; }
+        public ICommand CommandShowInfo { get; private set; }
+        #endregion
+
+        public GameSessionViewModel()
+        {
+            // initialise new Player
+            CurrentPlayer = new Player();
+            CurrentPlayer.Name = "Naoh";
+            CurrentPlayer.CharacterClass = "Mage";
+            CurrentPlayer.HitPoints = 10;
+            CurrentPlayer.Gold = 1000000;
+            CurrentPlayer.ExperiencePoints = 0;
+            CurrentPlayer.Level = 1;
+
+            // initialise new Location
+            CurrentPlayerLocation = new Location();
+            CurrentPlayerLocation.Name = "Home";
+            CurrentPlayerLocation.XCoordinate = 0;
+            CurrentPlayerLocation.YCoordinate = -1;
+            CurrentPlayerLocation.Description = "This is your house";
+            CurrentPlayerLocation.ImageName = "/Engine;component/Images/Locations/Home.png";
+
+            // initialise Commands                                           
+            CommandAddExp = new RelayCommand(AddExpExecute, AddExpCanExecute);
+            CommandAddGold = new RelayCommand(AddGoldExecute, null);
+            CommandShowInfo = new RelayCommand(ShowInfoExecute, null);
+        }
+
+        #region "Methods for Commands"
+        private bool AddExpCanExecute(object obj)
+        {
+            return CurrentPlayer.ExperiencePoints + 10 <= 100;
+        }
+
+        private void AddExpExecute(object obj)
+        {
+            CurrentPlayer.ExperiencePoints += 10;
+        }
+
+        private void AddGoldExecute(object obj)
+        {
+            CurrentPlayer.Gold += 25;
+        }
+
+        private void ShowInfoExecute(object obj)
+        {
+            DialogService.DialogViewModelBase vm = new PlayerInfoViewModel(CurrentPlayer);
+            DialogService.DialogResult result = DialogService.DialogService.OpenDialog(vm);
+        }
+        #endregion
+    }
+}

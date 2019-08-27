@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Engine.ViewModels;
+
+namespace Engine.Models
+{
+    public class Player : ViewModelBase
+    {
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set { SetProperty<string>(ref _name, value); }
+        }
+
+        private string _characterClass;
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set { SetProperty<string>(ref _characterClass, value); }
+        }
+
+
+        private int _hitPoints;
+        public int HitPoints
+        {
+            get { return _hitPoints; }
+            set { SetProperty<int>(ref _hitPoints, value); }
+        }
+
+        private int _experiencePoints;
+        public int ExperiencePoints
+        {
+            get { return _experiencePoints; }
+            set
+            {
+                SetProperty<int>(ref _experiencePoints, value);
+                if (ExperiencePoints == 100)
+                {
+                    SetProperty<int>(ref _level, ++Level);
+                    SetProperty<int>(ref _experiencePoints, 0);
+                }
+            }
+        }
+
+        private int _level;
+        public int Level
+        {
+            get { return _level; }
+            set { SetProperty<int>(ref _level, value); }
+        }
+
+        private int _gold;
+        public int Gold
+        {
+            get { return _gold; }
+            set { SetProperty<int>(ref _gold, value); }
+        }
+    }
+}

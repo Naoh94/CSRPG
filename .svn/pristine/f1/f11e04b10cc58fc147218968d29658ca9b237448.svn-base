@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Engine.Views;
+
+namespace Engine.DialogService
+{
+    //public static class DialogService
+    public class DialogService
+    {
+        public static DialogResult OpenDialog(DialogViewModelBase vm)
+        {
+            PlayerInfoView playerInfoWin = new PlayerInfoView();
+            playerInfoWin.DataContext = vm;
+            playerInfoWin.ShowDialog();
+            DialogResult result = (playerInfoWin.DataContext as DialogViewModelBase).UserDialogResult;
+            return result;
+        }
+    }
+}

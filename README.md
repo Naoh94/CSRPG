@@ -1,2 +1,1 @@
 # CSRPG
-Learning MVVM
