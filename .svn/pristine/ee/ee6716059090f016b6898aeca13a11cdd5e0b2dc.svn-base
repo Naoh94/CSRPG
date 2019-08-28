@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Engine.Command;
-using Engine.Factories;
 using Engine.Interfaces;
 using Engine.Models;
 using Engine.Views;
@@ -27,7 +26,6 @@ namespace Engine.ViewModels
         public ICommand CommandMoveSouth { get; private set; }
         public ICommand CommandShowInfo { get; private set; }
         public ICommand CommandShowWorldMap { get; private set; }
-        public ICommand CommandShowInventar { get; private set; }
         #endregion
 
         public GameSessionViewModel(IDialogService dialogService)
@@ -48,11 +46,7 @@ namespace Engine.ViewModels
                 CurrentLocation = CurrentWorld.LocationAt(1, -1)
             };
 
-            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1001));
-            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1002));
-            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1003));
-
-            #region Commands                                     
+            // initialise Commands                                           
             CommandAddExp = new RelayCommand(AddExpExecute, AddExpCanExecute);
             CommandMoveNorth = new RelayCommand(MoveNorthExecute, MoveNorthCanExecute);
             CommandMoveWest = new RelayCommand(MoveWestExecute, MoveWestCanExecute);
@@ -60,8 +54,6 @@ namespace Engine.ViewModels
             CommandMoveSouth = new RelayCommand(MoveSouthExecute, MoveSouthCanExecute);
             CommandShowInfo = new RelayCommand(ShowInfoExecute, null);
             CommandShowWorldMap = new RelayCommand(ShowWorldMapExecute, null);
-            CommandShowInventar = new RelayCommand(ShowInventarExecute, null);
-            #endregion
         }
 
         #region "Methods for Commands"
@@ -163,26 +155,6 @@ namespace Engine.ViewModels
             }
 
         }
-
-        private void ShowInventarExecute(object obj)
-        {
-            var viewModel = new InventarViewModel(CurrentPlayer);
-
-            bool? result = dialogService.ShowDialog(viewModel);
-
-            if (result.HasValue)
-            {
-                if (result.Value)
-                {
-                    // Ok
-                }
-                else
-                {
-                    // Cancelled
-                }
-            }
-
-        }
-#endregion
+        #endregion
     }
 }
