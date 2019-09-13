@@ -1,0 +1,208 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Engine.Command;
+using Engine.Factories;
+using Engine.Interfaces;
+using Engine.Models;
+using Engine.Views;
+
+namespace Engine.ViewModels
+{
+    public class GameSessionViewModel
+    {
+        private readonly IDialogService dialogService;
+
+        #region "public propertys"
+        public Player CurrentPlayer { get; set; }
+        public World CurrentWorld { get; set; }
+
+        public ICommand CommandAddExp { get; private set; }
+        public ICommand CommandMoveNorth { get; private set; }
+        public ICommand CommandMoveWest { get; private set; }
+        public ICommand CommandMoveEast { get; private set; }
+        public ICommand CommandMoveSouth { get; private set; }
+        public ICommand CommandShowInfo { get; private set; }
+        public ICommand CommandShowWorldMap { get; private set; }
+        public ICommand CommandShowInventar { get; private set; }
+        #endregion
+
+        public GameSessionViewModel(IDialogService dialogService)
+        {
+            this.dialogService = dialogService;
+
+            CurrentWorld = WorldFactory.CreateWorld();
+
+            // initialise new player
+            CurrentPlayer = new Player
+            {
+                Name = "Naohtest",
+                CharacterClass = "Mage",
+                HitPoints = 100,
+                Gold = 10,
+                ExperiencePoints = 0,
+                Level = 1,
+                CurrentLocation = CurrentWorld.LocationAt(1, -1)
+            };
+
+            CurrentPlayer.PlayerMoved += player_PlayerMoved;
+
+            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1001));
+            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1002));
+            CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1003));
+
+            #region Commands                                     
+            CommandAddExp = new RelayCommand(AddExpExecute, AddExpCanExecute);
+            CommandMoveNorth = new RelayCommand(MoveNorthExecute, MoveNorthCanExecute);
+            CommandMoveWest = new RelayCommand(MoveWestExecute, MoveWestCanExecute);
+            CommandMoveEast = new RelayCommand(MoveEastExecute, MoveEastCanExecute);
+            CommandMoveSouth = new RelayCommand(MoveSouthExecute, MoveSouthCanExecute);
+            CommandShowInfo = new RelayCommand(ShowInfoExecute, null);
+            CommandShowWorldMap = new RelayCommand(ShowWorldMapExecute, null);
+            CommandShowInventar = new RelayCommand(ShowInventarExecute, null);
+            #endregion
+        }
+
+        private void CurrentPlayer_PlayerMoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Every time when the player moved/gets a new location its gonna send a event to this handler. 
+        /// This method checked if any quests is avaible in the location. the quests are createt in the WorldFactory 
+        /// class. If the player has already the quest(ID) its gonna skip the quest.
+        /// </summary>
+        /// <param name="sender"></param>
+        public static void player_PlayerMoved(Player sender)
+        {
+            foreach (Quest quest in sender.CurrentLocation.QuestsAvailableHere)
+            {
+                if (!sender.Quests.Any(q => q.PlayerQuest.ID == quest.ID))
+                {
+                    sender.Quests.Add(new QuestStatus(quest));
+                }
+            }
+        }
+
+        #region "Methods for Commands"
+        private void AddExpExecute(object obj)
+        {
+            CurrentPlayer.ExperiencePoints += 10;
+        }
+
+        private bool AddExpCanExecute(object obj)
+        {
+            return CurrentPlayer.ExperiencePoints + 10 <= 100;
+        }
+
+        private void MoveNorthExecute(object obj)
+        {
+            CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate, CurrentPlayer.CurrentLocation.YCoordinate + 1);
+        }
+
+        private void MoveWestExecute(object obj)
+        {
+            CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate - 1, CurrentPlayer.CurrentLocation.YCoordinate);
+        }
+
+        private void MoveEastExecute(object obj)
+        {
+            CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate + 1, CurrentPlayer.CurrentLocation.YCoordinate);
+        }
+
+        private void MoveSouthExecute(object obj)
+        {
+            CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate, CurrentPlayer.CurrentLocation.YCoordinate - 1);
+        }
+
+        private bool MoveNorthCanExecute(object obj)
+        {
+            return CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate, CurrentPlayer.CurrentLocation.YCoordinate + 1) != null;
+        }
+
+        private bool MoveWestCanExecute(object obj)
+        {
+            return CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate - 1, CurrentPlayer.CurrentLocation.YCoordinate) != null;
+        }
+
+        private bool MoveEastCanExecute(object obj)
+        {
+            return CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate + 1, CurrentPlayer.CurrentLocation.YCoordinate) != null;
+        }
+
+        private bool MoveSouthCanExecute(object obj)
+        {
+            return CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate, CurrentPlayer.CurrentLocation.YCoordinate - 1) != null;
+        }
+
+
+        /// <summary>
+        /// Open a new dialaog. Its decoupled from the ViewModel and View. Unit test is not going to show the dialog!
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ShowInfoExecute(object obj)
+        {
+            var viewModel = new PlayerInfoViewModel(CurrentPlayer);
+
+            bool? result = dialogService.ShowDialog(viewModel);
+
+            if (result.HasValue)
+            {
+                if (result.Value)
+                {
+                    // Ok
+                }
+                else
+                {
+                    // Cancelled
+                }
+            }
+
+        }
+
+        private void ShowWorldMapExecute(object obj)
+        {
+            var viewModel = new WorldMapViewModel();
+
+            bool? result = dialogService.ShowDialog(viewModel);
+
+            if (result.HasValue)
+            {
+                if (result.Value)
+                {
+                    // Ok
+                }
+                else
+                {
+                    // Cancelled
+                }
+            }
+
+        }
+
+        private void ShowInventarExecute(object obj)
+        {
+            var viewModel = new InventarViewModel(CurrentPlayer);
+
+            bool? result = dialogService.ShowDialog(viewModel);
+
+            if (result.HasValue)
+            {
+                if (result.Value)
+                {
+                    // Ok
+                }
+                else
+                {
+                    // Cancelled
+                }
+            }
+
+        }
+#endregion
+    }
+}
