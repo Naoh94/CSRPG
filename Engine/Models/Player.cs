@@ -8,8 +8,12 @@ using Engine.ViewModels;
 
 namespace Engine.Models
 {
+    public delegate void PlayerMovedEventHandler(Player sender);
+
     public class Player : ViewModelBase
     {
+        public event PlayerMovedEventHandler PlayerMoved;
+
         private string _name;
         public string Name
         {
@@ -65,14 +69,23 @@ namespace Engine.Models
         public Location CurrentLocation
         {
             get { return _currentLocation; }
-            set { SetProperty<Location>(ref _currentLocation, value); }
+            set
+            {
+                SetProperty<Location>(ref _currentLocation, value);
+
+                PlayerMoved?.Invoke(this);
+            }
         }
 
         public ObservableCollection<GameItem> Inventory { get; set; }
 
+        public ObservableCollection<QuestStatus> Quests { get; set; }
+
         public Player()
         {
             Inventory = new ObservableCollection<GameItem>();
+            Quests = new ObservableCollection<QuestStatus>();
         }
+
     }
 }

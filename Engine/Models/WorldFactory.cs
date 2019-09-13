@@ -48,6 +48,8 @@ namespace Engine.Models
                 "There is a Forest here, with many monster.",
                 "/Engine;component/Images/Locations/Forest.jpg");
 
+            newWorld.LocationAt(0, -1).QuestsAvailableHere.Add(QuestFactory.GetQuestByID(1));
+
             newWorld.AddLocation(1, -1, "Home",
                 "This is your home",
                 "/Engine;component/Images/Locations/Home.jpg");

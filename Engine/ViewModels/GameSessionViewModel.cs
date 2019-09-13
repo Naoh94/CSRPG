@@ -36,7 +36,7 @@ namespace Engine.ViewModels
 
             CurrentWorld = WorldFactory.CreateWorld();
 
-            // initialise new Player
+            // initialise new player
             CurrentPlayer = new Player
             {
                 Name = "Naohtest",
@@ -47,6 +47,8 @@ namespace Engine.ViewModels
                 Level = 1,
                 CurrentLocation = CurrentWorld.LocationAt(1, -1)
             };
+
+            CurrentPlayer.PlayerMoved += player_PlayerMoved;
 
             CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1001));
             CurrentPlayer.Inventory.Add(ItemFactory.CreateGameItem(1002));
@@ -62,6 +64,28 @@ namespace Engine.ViewModels
             CommandShowWorldMap = new RelayCommand(ShowWorldMapExecute, null);
             CommandShowInventar = new RelayCommand(ShowInventarExecute, null);
             #endregion
+        }
+
+        private void CurrentPlayer_PlayerMoved()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Every time when the player moved/gets a new location its gonna send a event to this handler. 
+        /// This method checked if any quests is avaible in the location. the quests are createt in the WorldFactory 
+        /// class. If the player has already the quest(ID) its gonna skip the quest.
+        /// </summary>
+        /// <param name="sender"></param>
+        public static void player_PlayerMoved(Player sender)
+        {
+            foreach (Quest quest in sender.CurrentLocation.QuestsAvailableHere)
+            {
+                if (!sender.Quests.Any(q => q.PlayerQuest.ID == quest.ID))
+                {
+                    sender.Quests.Add(new QuestStatus(quest));
+                }
+            }
         }
 
         #region "Methods for Commands"
@@ -87,15 +111,11 @@ namespace Engine.ViewModels
 
         private void MoveEastExecute(object obj)
         {
-            Location cPlayerLoc = CurrentPlayer.CurrentLocation;
-
             CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate + 1, CurrentPlayer.CurrentLocation.YCoordinate);
         }
 
         private void MoveSouthExecute(object obj)
         {
-            Location cPlayerLoc = CurrentPlayer.CurrentLocation;
-
             CurrentPlayer.CurrentLocation = CurrentWorld.LocationAt(CurrentPlayer.CurrentLocation.XCoordinate, CurrentPlayer.CurrentLocation.YCoordinate - 1);
         }
 

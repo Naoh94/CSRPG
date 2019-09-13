@@ -13,12 +13,27 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="0" ItemsSource="{Binding CurrentPlayer.Inventory}" AutoGenerateColumns="False" HeadersVisibility="Column">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Description" Binding="{Binding Name}" Width="8*" />
-                <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="2*" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <TabControl Grid.Row="0">
+            <TabItem Header="Inventory">
+                <DataGrid ItemsSource="{Binding CurrentPlayer.Inventory}" AutoGenerateColumns="False" HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Name}" Width="8*" />
+                        <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="2*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <TabItem Header="Quests">
+                <DataGrid ItemsSource="{Binding CurrentPlayer.Quests}" AutoGenerateColumns="False" HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding PlayerQuest.Name}" Width="1*" />
+                        <DataGridTextColumn Header="Description" Binding="{Binding PlayerQuest.Description}" Width="3*" />
+                        <DataGridTextColumn Header="Done?" Binding="{Binding IsCompleted}" Width="1*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
 
         <Button Grid.Row="1" Width="50" Height="25"  Content="Ok" Command="{Binding CommandOk}"/>
     </Grid>

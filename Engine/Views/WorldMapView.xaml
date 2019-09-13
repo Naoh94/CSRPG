@@ -12,6 +12,6 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Image Grid.Row="0" HorizontalAlignment="Center" Source="/Engine;component/Images/Locations/Worldmap.png" />
-        <Button Content="Ok" Grid.Row="1" Width="50" Height="25"  HorizontalAlignment="Center" Command="{Binding CommandOk}"/>
+        <Button Content="Close" Grid.Row="1" Width="50" Height="25"  HorizontalAlignment="Center" Command="{Binding CommandOk}"/>
     </Grid>
 </Window>
